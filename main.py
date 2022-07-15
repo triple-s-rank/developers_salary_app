@@ -7,7 +7,7 @@ from terminaltables import SingleTable
 import requests
 
 
-def make_table(vacancies_dict: Dict[str, Dict[str, Union[float, int]]]):
+def make_table(vacancies_dict: dict, title: str):
     data = list()
     data.append([
         'Язык программирования',
@@ -20,7 +20,7 @@ def make_table(vacancies_dict: Dict[str, Dict[str, Union[float, int]]]):
             vacancy_info['vacancies_found'],
             vacancy_info['vacancies_processed'],
             vacancy_info['average_salary']])
-    title = 'smth'
+
     print(SingleTable(data, title).table)
 
 
@@ -103,8 +103,8 @@ def main():
         }
         url = 'https://api.superjob.ru/2.0/vacancies'
         sj_vacancies_dict[language] = fetch_all_salaries_sj(url, params, headers)
-    make_table(hh_vacancies_dict)
-    make_table(sj_vacancies_dict)
+    make_table(hh_vacancies_dict, title='HeadHunter Analytics')
+    make_table(sj_vacancies_dict, title='SuperJob Analytics')
 
 
 if __name__ == '__main__':
