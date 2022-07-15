@@ -1,7 +1,11 @@
+import os
 from itertools import count
 from statistics import mean
-from typing import Union, Dict
+from typing import Union
 
+import os
+
+from dotenv import load_dotenv
 from terminaltables import SingleTable
 
 import requests
@@ -90,6 +94,7 @@ def fetch_all_salaries_sj(url: str, params: dict, headers: dict) -> dict:
 
 
 def main():
+    load_dotenv()
     hh_vacancies_dict = {}
     sj_vacancies_dict = {}
     for language in ('Flutter', 'Rust', 'Dart'):
@@ -97,10 +102,7 @@ def main():
         url = 'https://api.hh.ru/vacancies'
         hh_vacancies_dict[language] = fetch_all_salaries_hh(url, params)
         params = {'town': 4, 'keyword': f'{language} разработчик', 'count': 100}
-        headers = {
-            'X-Api-App-Id':
-                'v3.r.136805035.9d02bec60443e5736d70f80f04969b0d37a4e525.dc10c3e63a6116e6840aec166bf23e304a1e678d'
-        }
+        headers = {'X-Api-App-Id': os.getenv('SJ_API_KEY')}
         url = 'https://api.superjob.ru/2.0/vacancies'
         sj_vacancies_dict[language] = fetch_all_salaries_sj(url, params, headers)
     make_table(hh_vacancies_dict, title='HeadHunter Analytics')
