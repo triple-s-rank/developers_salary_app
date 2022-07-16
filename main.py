@@ -4,9 +4,9 @@ import os
 
 from dotenv import load_dotenv
 
-from hh_areas import serialize_and_save_data, fetch_cities_id
-from hh_statistics import fetch_all_salaries_hh
-from sj_statistics import fetch_all_salaries_sj
+from get_hh_areas_ids import serialize_and_save_data, fetch_cities_id
+from get_hh_statistics import fetch_all_salaries_hh
+from get_sj_statistics import fetch_all_salaries_sj
 from cli_tables import make_table
 
 
