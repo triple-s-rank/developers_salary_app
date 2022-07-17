@@ -43,8 +43,8 @@ def main():
         params = {'town': args.city, 'keyword': f'{language} разработчик', 'count': 100}
         headers = {'X-Api-App-Id': os.getenv('SJ_API_KEY')}
         sj_vacancies[language] = fetch_all_salaries_sj(url, params, headers)
-    make_table(sj_vacancies, title='SuperJob Analytics')
+    return make_table(sj_vacancies, title='SuperJob Analytics')
 
 
 if __name__ == '__main__':
-    main()
+    print(main())

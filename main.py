@@ -33,10 +33,13 @@ def main():
         headers = {'X-Api-App-Id': os.getenv('SJ_API_KEY')}
         url = 'https://api.superjob.ru/2.0/vacancies'
         sj_vacancies_dict[language] = fetch_all_salaries_sj(url, params, headers)
-    make_table(hh_vacancies_dict, title='HeadHunter Analytics')
-    make_table(sj_vacancies_dict, title='SuperJob Analytics')
+    return (
+            make_table(hh_vacancies_dict, title='HeadHunter Analytics'),
+            make_table(sj_vacancies_dict, title='SuperJob Analytics'),
+            )
 
 
 if __name__ == '__main__':
-    main()
+    hh, sj = main()
+    print(hh, sj, sep='\n')
 

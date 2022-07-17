@@ -15,4 +15,4 @@ def make_table(vacancies_dict: dict, title: str):
             vacancy_info['vacancies_processed'],
             vacancy_info['average_salary']])
 
-    print(SingleTable(data, title).table)
+    return SingleTable(data, title).table

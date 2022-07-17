@@ -43,8 +43,8 @@ def main():
         params = {'text': f'{language} разработчик', 'per_page': 100}
         if args.city: params['area'] = cities_id[args.city]
         hh_vacancies[language] = fetch_all_salaries_hh(url, params)
-    make_table(hh_vacancies, title='HeadHunter Analytics')
+    return make_table(hh_vacancies, title='HeadHunter Analytics')
 
 
 if __name__ == '__main__':
-    main()
+    print(main())
