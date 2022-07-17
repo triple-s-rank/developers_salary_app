@@ -4,7 +4,7 @@ import requests
 import argparse
 
 from salaries_calculations import calculate_average, predict_rub_salary_hh
-from hh_areas_ids import serialize_and_save_data, fetch_cities_id
+from hh_areas_ids import fetch_cities_id, serialize_and_save_ids
 from cli_tables import make_table
 
 
@@ -28,7 +28,8 @@ def fetch_all_salaries_hh(url: str, params: dict) -> dict:
 
 def main():
     hh_vacancies = {}
-    cities_id = serialize_and_save_data(fetch_cities_id)
+    cities_id = fetch_cities_id()
+    cities_id = serialize_and_save_ids(cities_id)
     parser = argparse.ArgumentParser(
         description='Enter programming language or languages name to find all available'
                     ' vacancies in hh base related with it and average salary'
@@ -39,7 +40,8 @@ def main():
     args.keywords = tuple(args.keywords.split(','))
     for language in args.keywords:
         url = 'https://api.hh.ru/vacancies/'
-        params = {'area': cities_id[args.city], 'text': f'{language} разработчик', 'per_page': 100}
+        params = {'text': f'{language} разработчик', 'per_page': 100}
+        if args.city: params['area'] = cities_id[args.city]
         hh_vacancies[language] = fetch_all_salaries_hh(url, params)
     make_table(hh_vacancies, title='HeadHunter Analytics')
 

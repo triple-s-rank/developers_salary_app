@@ -4,7 +4,7 @@ import os
 
 from dotenv import load_dotenv
 
-from hh_areas_ids import serialize_and_save_data, fetch_cities_id
+from hh_areas_ids import fetch_cities_id, serialize_and_save_ids
 from hh_statistics import fetch_all_salaries_hh
 from sj_statistics import fetch_all_salaries_sj
 from cli_tables import make_table
@@ -14,7 +14,8 @@ def main():
     load_dotenv()
     hh_vacancies_dict = {}
     sj_vacancies_dict = {}
-    hh_cities_id = serialize_and_save_data(fetch_cities_id)
+    hh_cities_id = fetch_cities_id()
+    hh_cities_id = serialize_and_save_ids(hh_cities_id)
     parser = argparse.ArgumentParser(
         description='Enter programming language or languages name to get number of available'
                     ' vacancies in HeadHunter and SuperJob databases related with it and average salary'
@@ -24,7 +25,8 @@ def main():
     args = parser.parse_args()
     args.keywords = tuple(args.keywords.split(','))
     for language in args.keywords:
-        params = {'area': hh_cities_id[args.city], 'text': f'{language} разработчик', 'per_page': 100}
+        params = {'text': f'{language} разработчик', 'per_page': 100}
+        if args.city: params['area'] = hh_cities_id[args.city]
         url = 'https://api.hh.ru/vacancies'
         hh_vacancies_dict[language] = fetch_all_salaries_hh(url, params)
         params = {'town': args.city, 'keyword': f'{language} разработчик', 'count': 100}

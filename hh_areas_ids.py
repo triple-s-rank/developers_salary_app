@@ -12,7 +12,7 @@ def fetch_cities_id():
     return cities_and_regions
 
 
-def serialize_and_save_data(data: dict):
+def serialize_and_save_ids(data: dict):
     try:
         with open('city_id_hh.json', 'r') as f:
             data = {}
@@ -24,3 +24,5 @@ def serialize_and_save_data(data: dict):
         with open('city_id_hh.json', 'a') as fp:
             json.dump(data, fp)
     return data
+
+
