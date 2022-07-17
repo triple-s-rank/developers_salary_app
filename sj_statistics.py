@@ -15,13 +15,14 @@ def fetch_all_salaries_sj(url: str, params: dict, headers: dict) -> dict:
         params['page'] = page
         page_response = requests.get(url=url, headers=headers, params=params)
         page_response.raise_for_status()
-        vacancies = page_response.json()
-        for vacancy in vacancies['objects']:
+        page_response_serialized = page_response.json()
+        vacancies = page_response_serialized['objects']
+        for vacancy in vacancies:
             all_salaries.append(predict_rub_salary_sj(vacancy))
-        if not vacancies['more']:
+        if not page_response_serialized['more']:
             break
     return {
-        'vacancies_found': vacancies['total'],
+        'vacancies_found': page_response_serialized['total'],
         'vacancies_processed': len(all_salaries),
         'average_salary': calculate_average(all_salaries)
     }
