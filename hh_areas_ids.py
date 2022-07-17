@@ -4,6 +4,7 @@ import requests
 
 def fetch_cities_id():
     response = requests.get(url='https://api.hh.ru/areas', params={'per_page': 100})
+    response.raise_for_status()
     cities_and_regions = {}
     for region in response.json()[0]['areas']:
         cities_and_regions[region['name']] = region['id']
