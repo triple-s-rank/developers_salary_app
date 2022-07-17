@@ -1,7 +1,8 @@
 from itertools import count
+import argparse
 
 import requests
-import argparse
+
 
 from salaries_calculations import calculate_average, predict_rub_salary_hh
 from hh_areas_ids import fetch_cities_id, serialize_and_save_ids
