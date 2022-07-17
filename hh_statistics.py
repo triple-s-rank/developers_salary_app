@@ -4,7 +4,7 @@ import requests
 import argparse
 
 from salaries_calculations import calculate_average, predict_rub_salary_hh
-from get_hh_areas_ids import serialize_and_save_data, fetch_cities_id
+from hh_areas_ids import serialize_and_save_data, fetch_cities_id
 from cli_tables import make_table
 
 
