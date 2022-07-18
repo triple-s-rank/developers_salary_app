@@ -9,7 +9,8 @@ from hh_areas_ids import fetch_cities_id, serialize_and_save_ids
 from cli_tables import make_table
 
 
-def fetch_all_salaries_hh(url: str, params: dict) -> dict:
+def fetch_all_salaries_hh(params: dict) -> dict:
+    url = 'https://api.hh.ru/vacancies/'
     all_salaries = []
     maximum_allowed_pages_to_fetch = 19
     for page in count():
@@ -42,10 +43,9 @@ def main():
     args = parser.parse_args()
     args.keywords = tuple(args.keywords.split(','))
     for language in args.keywords:
-        url = 'https://api.hh.ru/vacancies/'
         params = {'text': f'{language} разработчик', 'per_page': 100}
         if args.city: params['area'] = cities_id[args.city]
-        hh_vacancies[language] = fetch_all_salaries_hh(url, params)
+        hh_vacancies[language] = fetch_all_salaries_hh(params)
     return make_table(hh_vacancies, title='HeadHunter Analytics')
 
 

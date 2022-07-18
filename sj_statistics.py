@@ -9,7 +9,8 @@ from cli_tables import make_table
 from salaries_calculations import predict_rub_salary_sj, calculate_average
 
 
-def fetch_all_salaries_sj(url: str, params: dict, headers: dict) -> dict:
+def fetch_all_salaries_sj(params: dict, headers: dict) -> dict:
+    url = 'https://api.superjob.ru/2.0/vacancies'
     all_salaries = []
     for page in count():
         params['page'] = page
@@ -32,7 +33,7 @@ def main():
     load_dotenv()
     sj_vacancies = {}
     parser = argparse.ArgumentParser(
-        description='Enter programming language or languages name to find all available'
+        description='Enter programming languag  e or languages name to find all available'
                     ' vacancies in sj base related with it and average salary'
     )
     parser.add_argument('keywords', help='Enter single or several programming languages separated with commas')
@@ -40,10 +41,9 @@ def main():
     args = parser.parse_args()
     args.keywords = tuple(args.keywords.split(','))
     for language in args.keywords:
-        url = 'https://api.superjob.ru/2.0/vacancies'
         params = {'town': args.city, 'keyword': f'{language} разработчик', 'count': 100}
         headers = {'X-Api-App-Id': os.getenv('SJ_API_KEY')}
-        sj_vacancies[language] = fetch_all_salaries_sj(url, params, headers)
+        sj_vacancies[language] = fetch_all_salaries_sj(params, headers)
     return make_table(sj_vacancies, title='SuperJob Analytics')
 
 
