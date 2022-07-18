@@ -11,7 +11,7 @@ from cli_tables import make_table
 
 def fetch_all_salaries_hh(url: str, params: dict) -> dict:
     all_salaries = []
-    MAXIMUM_ALLOWED_PAGES_TO_FETCH = 19
+    maximum_allowed_pages_to_fetch = 19
     for page in count():
         params['page'] = page
         page_response = requests.get(url=url, params=params)
@@ -20,7 +20,7 @@ def fetch_all_salaries_hh(url: str, params: dict) -> dict:
         page_vacancies = page_response_serialized['items']
         for vacancy in page_vacancies:
             all_salaries.append(predict_rub_salary_hh(vacancy))
-        if page >= MAXIMUM_ALLOWED_PAGES_TO_FETCH:
+        if page >= maximum_allowed_pages_to_fetch:
             break
     return {
             'vacancies_found': page_response_serialized['found'],
