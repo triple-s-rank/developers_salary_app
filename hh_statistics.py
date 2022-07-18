@@ -17,14 +17,14 @@ def fetch_all_salaries_hh(params: dict) -> dict:
         params['page'] = page
         page_response = requests.get(url=url, params=params)
         page_response.raise_for_status()
-        page_response_serialized = page_response.json()
-        page_vacancies = page_response_serialized['items']
+        decoded_page_response = page_response.json()
+        page_vacancies = decoded_page_response['items']
         for vacancy in page_vacancies:
             all_salaries.append(predict_rub_salary_hh(vacancy))
         if page >= maximum_allowed_pages_to_fetch:
             break
     return {
-            'vacancies_found': page_response_serialized['found'],
+            'vacancies_found': decoded_page_response['found'],
             'vacancies_processed': len(all_salaries),
             'average_salary': calculate_average(all_salaries)
             }
