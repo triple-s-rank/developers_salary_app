@@ -1,7 +1,7 @@
 from terminaltables import SingleTable
 
 
-def make_table(vacancies_dict: dict, title: str):
+def make_table(vacancies_dict: dict, title: str) -> str:
     data = list()
     data.append([
         'Язык программирования',
@@ -14,5 +14,4 @@ def make_table(vacancies_dict: dict, title: str):
             vacancy_info['vacancies_found'],
             vacancy_info['vacancies_processed'],
             vacancy_info['average_salary']])
-
     return SingleTable(data, title).table

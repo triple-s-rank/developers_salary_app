@@ -29,7 +29,7 @@ def fetch_all_salaries_sj(params: dict, headers: dict) -> dict:
     }
 
 
-def set_sj_parameters(language, town):
+def set_sj_parameters(language: str, town: str) -> tuple[dict, dict]:
     params = {'town': town, 'keyword': f'{language} разработчик', 'count': 100}
     headers = {'X-Api-App-Id': os.getenv('SJ_API_KEY')}
     return params, headers
@@ -41,7 +41,7 @@ def main():
     keywords, town = parse_arguments()
     for language in keywords:
         params, headers = set_sj_parameters(language, town)
-        sj_vacancies.update(language=fetch_all_salaries_sj(params, headers))
+        sj_vacancies[language] = fetch_all_salaries_sj(params, headers)
     print(make_table(sj_vacancies, title='SuperJob Analytics'))
 
 

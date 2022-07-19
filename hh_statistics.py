@@ -7,7 +7,7 @@ from cli_tables import make_table
 from cli_parser import parse_arguments
 
 
-def fetch_cities_id():
+def fetch_cities_id() -> dict:
     response = requests.get(url='https://api.hh.ru/areas', params={'per_page': 100})
     response.raise_for_status()
     cities_and_regions = {}
@@ -39,9 +39,9 @@ def fetch_all_salaries_hh(params: dict) -> dict:
             }
 
 
-def set_hh_parameters(language, city):
+def set_hh_parameters(language: str, city: str) -> dict:
     cities_id = fetch_cities_id()
-    params = {'keyword': f'{language} разработчик', 'per_page': 100}
+    params = {'text': f'{language} разработчик', 'per_page': 100}
     try:
         params.update(area=cities_id[city])
     except KeyError:
@@ -53,7 +53,7 @@ def main():
     hh_vacancies = {}
     keywords, city = parse_arguments()
     for language in keywords:
-        hh_vacancies.update(language=fetch_all_salaries_hh(set_hh_parameters(language, city)))
+        hh_vacancies[language] = fetch_all_salaries_hh(set_hh_parameters(language, city))
     print(make_table(hh_vacancies, title='HeadHunter Analytics'))
 
 

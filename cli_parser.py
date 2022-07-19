@@ -1,7 +1,7 @@
 import argparse
 
 
-def parse_arguments():
+def parse_arguments() -> tuple[tuple, str]:
     parser = argparse.ArgumentParser(
         description='Enter programming language or languages name to find all available'
                     ' vacancies in sj base related with it and average salary'
