@@ -1,12 +1,21 @@
 from itertools import count
-import argparse
 
 import requests
 
-
 from salaries_calculations import calculate_average, predict_rub_salary_hh
-from hh_areas_ids import fetch_cities_id, serialize_and_save_ids
 from cli_tables import make_table
+from cli_parser import parse_arguments
+
+
+def fetch_cities_id():
+    response = requests.get(url='https://api.hh.ru/areas', params={'per_page': 100})
+    response.raise_for_status()
+    cities_and_regions = {}
+    for region in response.json()[0]['areas']:
+        cities_and_regions[region['name']] = region['id']
+        for town in region['areas']:
+            cities_and_regions[town['name']] = town['id']
+    return cities_and_regions
 
 
 def fetch_all_salaries_hh(params: dict) -> dict:
@@ -30,24 +39,23 @@ def fetch_all_salaries_hh(params: dict) -> dict:
             }
 
 
+def set_hh_parameters(language, city):
+    cities_id = fetch_cities_id()
+    params = {'keyword': f'{language} разработчик', 'per_page': 100}
+    try:
+        params['area'] = cities_id[city]
+    except KeyError:
+        raise KeyError('Такого города нет в базе данных HeadHunter')
+    return params
+
+
 def main():
     hh_vacancies = {}
-    cities_id = fetch_cities_id()
-    cities_id = serialize_and_save_ids(cities_id)
-    parser = argparse.ArgumentParser(
-        description='Enter programming language or languages name to find all available'
-                    ' vacancies in hh base related with it and average salary'
-    )
-    parser.add_argument('keywords', help='Enter single or several programming languages separated with commas')
-    parser.add_argument('-city', '--city', help='Enter city name, to filter vacancies by area.')
-    args = parser.parse_args()
-    args.keywords = tuple(args.keywords.split(','))
-    for language in args.keywords:
-        params = {'text': f'{language} разработчик', 'per_page': 100}
-        if args.city: params['area'] = cities_id[args.city]
-        hh_vacancies[language] = fetch_all_salaries_hh(params)
-    return make_table(hh_vacancies, title='HeadHunter Analytics')
+    keywords, city = parse_arguments()
+    for language in keywords:
+        hh_vacancies[language] = fetch_all_salaries_hh(set_hh_parameters(language, city))
+    print(make_table(hh_vacancies, title='HeadHunter Analytics'))
 
 
 if __name__ == '__main__':
-    print(main())
+    main()

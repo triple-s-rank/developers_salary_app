@@ -1,10 +1,10 @@
-import argparse
 import os
 from itertools import count
 
 import requests
 from dotenv import load_dotenv
 
+from cli_parser import parse_arguments
 from cli_tables import make_table
 from salaries_calculations import predict_rub_salary_sj, calculate_average
 
@@ -29,23 +29,21 @@ def fetch_all_salaries_sj(params: dict, headers: dict) -> dict:
     }
 
 
+def set_sj_parameters(language, town):
+    params = {'town': town, 'keyword': f'{language} разработчик', 'count': 100}
+    headers = {'X-Api-App-Id': os.getenv('SJ_API_KEY')}
+    return params, headers
+
+
 def main():
     load_dotenv()
     sj_vacancies = {}
-    parser = argparse.ArgumentParser(
-        description='Enter programming languag  e or languages name to find all available'
-                    ' vacancies in sj base related with it and average salary'
-    )
-    parser.add_argument('keywords', help='Enter single or several programming languages separated with commas')
-    parser.add_argument('-city', '--city', help='Enter city name, to filter vacancies by area.')
-    args = parser.parse_args()
-    args.keywords = tuple(args.keywords.split(','))
-    for language in args.keywords:
-        params = {'town': args.city, 'keyword': f'{language} разработчик', 'count': 100}
-        headers = {'X-Api-App-Id': os.getenv('SJ_API_KEY')}
+    keywords, town = parse_arguments()
+    for language in keywords:
+        params, headers = set_sj_parameters(language, town)
         sj_vacancies[language] = fetch_all_salaries_sj(params, headers)
-    return make_table(sj_vacancies, title='SuperJob Analytics')
+    print(make_table(sj_vacancies, title='SuperJob Analytics'))
 
 
 if __name__ == '__main__':
-    print(main())
+    main()
