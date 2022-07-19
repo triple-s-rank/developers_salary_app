@@ -13,7 +13,7 @@ def fetch_all_salaries_sj(params: dict, headers: dict) -> dict:
     url = 'https://api.superjob.ru/2.0/vacancies'
     all_salaries = []
     for page in count():
-        params['page'] = page
+        params.update(page=page)
         page_response = requests.get(url=url, headers=headers, params=params)
         page_response.raise_for_status()
         decoded_page_response = page_response.json()
@@ -41,7 +41,7 @@ def main():
     keywords, town = parse_arguments()
     for language in keywords:
         params, headers = set_sj_parameters(language, town)
-        sj_vacancies[language] = fetch_all_salaries_sj(params, headers)
+        sj_vacancies.update(language=fetch_all_salaries_sj(params, headers))
     print(make_table(sj_vacancies, title='SuperJob Analytics'))
 
 

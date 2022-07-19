@@ -23,7 +23,7 @@ def fetch_all_salaries_hh(params: dict) -> dict:
     all_salaries = []
     maximum_allowed_pages_to_fetch = 19
     for page in count():
-        params['page'] = page
+        params.update(page=page)
         page_response = requests.get(url=url, params=params)
         page_response.raise_for_status()
         decoded_page_response = page_response.json()
@@ -43,7 +43,7 @@ def set_hh_parameters(language, city):
     cities_id = fetch_cities_id()
     params = {'keyword': f'{language} разработчик', 'per_page': 100}
     try:
-        params['area'] = cities_id[city]
+        params.update(area=cities_id[city])
     except KeyError:
         raise KeyError('Такого города нет в базе данных HeadHunter')
     return params
@@ -53,7 +53,7 @@ def main():
     hh_vacancies = {}
     keywords, city = parse_arguments()
     for language in keywords:
-        hh_vacancies[language] = fetch_all_salaries_hh(set_hh_parameters(language, city))
+        hh_vacancies.update(language=fetch_all_salaries_hh(set_hh_parameters(language, city)))
     print(make_table(hh_vacancies, title='HeadHunter Analytics'))
 
 
